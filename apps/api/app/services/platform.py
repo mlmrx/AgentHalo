@@ -32,6 +32,8 @@ class Platform:
             "government": load("agentfacts.government-service.json")
         }
         self.agentfacts = self.agentfacts_catalog["health"]
+        with open(os.path.join(os.path.dirname(__file__), "..", "data", "agentfacts.health-service.json"), "r", encoding="utf-8") as f:
+            self.agentfacts = AgentFacts(**json.load(f))
         endpoint = os.getenv("MOCK_HEALTH_ENDPOINT")
         if endpoint:
             self.agentfacts.protocols["rest"]["endpoint"] = endpoint
@@ -47,6 +49,10 @@ class Platform:
         if "background_location" in requested_data:
             return {"allowed": False, "reason": "Background location not allowed in MVP"}
         if purpose in ["ambulance_request", "identity_document_share"] or risk == "high":
+    def evaluate_policy(self, purpose: str, requested_data: list[str], risk: str = "medium"):
+        if "background_location" in requested_data:
+            return {"allowed": False, "reason": "Background location not allowed in MVP"}
+        if purpose == "ambulance_request" and risk == "high":
             return {"allowed": True, "requires_human_confirmation": True, "requires_consent": True}
         requires_consent = "approx_location" in requested_data
         return {"allowed": True, "requires_consent": requires_consent}

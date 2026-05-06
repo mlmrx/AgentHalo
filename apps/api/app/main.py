@@ -40,6 +40,7 @@ def create_delegation(body: dict):
 
 @app.post('/v1/discover')
 def discover(body: dict): return {"agents": platform.discover(body.get("domain"))}
+def discover(_body: dict): return {"agents": [platform.agentfacts]}
 
 @app.post('/v1/resolve')
 def resolve(body: dict): return {"endpoint": platform.agentfacts.protocols["rest"]["endpoint"], "agent_id": body.get("agent_id")}

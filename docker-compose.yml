@@ -7,6 +7,8 @@ services:
       POSTGRES_PASSWORD: agenthalo
       POSTGRES_DB: agenthalo
     ports: ["5432:5432"]
+    ports:
+      - "5432:5432"
   api:
     build:
       context: .
@@ -42,3 +44,19 @@ services:
     volumes: ["./examples/government:/app:ro"]
     command: sh -c "pip install fastapi uvicorn && uvicorn mock-government-service:app --host 0.0.0.0 --port 8040"
     ports: ["8040:8040"]
+    ports:
+      - "8000:8000"
+    depends_on: [db, mock-health]
+  web:
+    image: nginx:alpine
+    volumes:
+      - ./apps/web:/usr/share/nginx/html:ro
+    ports:
+      - "3000:80"
+    depends_on: [api]
+  mock-health:
+    build:
+      context: .
+      dockerfile: examples/kumbh/Dockerfile
+    ports:
+      - "8010:8010"
