@@ -1,0 +1,16 @@
+{
+  "name": "agenthalo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AgentHalo MVP - trusted personal presence of your AI agent",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "nanoid": "^5.0.7"
+  }
+}
