@@ -1,0 +1,1 @@
+export function planIntent(prompt=''){ if(/medical|health|care/i.test(prompt)) return 'find_nearest_care'; if(/flight|rebook|travel/i.test(prompt)) return 'travel_rebooking_options'; if(/afford|purchase|\$|spend/i.test(prompt)) return 'financial_affordability_check'; return 'unknown'; }
