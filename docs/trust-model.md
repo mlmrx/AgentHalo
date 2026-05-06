@@ -4,3 +4,4 @@
 - DelegationGrants are short-lived and revocable.
 - ServiceCards must verify before any external call.
 - All actions are auditable.
+# trust-model

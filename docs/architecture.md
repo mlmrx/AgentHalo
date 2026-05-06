@@ -13,3 +13,4 @@ User → HaloSurface → AgentHalo Gateway → HaloRuntime
 - HaloAudit
 
 Design rule: full vault data never leaves AgentHalo. External calls receive only purpose-bound, audience-bound, consent-approved minimum fields.
+# architecture
