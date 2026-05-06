@@ -1,0 +1,1 @@
+export function composeResponse({intent,result,dataShared,dataNotShared}){ return { intent,result,dataShared,dataNotShared,message:`Completed ${intent}. Shared: ${dataShared.join(', ')||'none'}. Not shared: ${dataNotShared.join(', ')||'none'}.`}; }
