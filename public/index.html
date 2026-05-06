@@ -1,40 +1,6 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AgentHalo — Personal Trust Field</title>
-  <link rel="stylesheet" href="/styles.css" />
-</head>
-<body>
-  <header class="hero">
-    <h1>AgentHalo</h1>
-    <p class="sub">The Personal Trust Field for AI Agents.</p>
-    <p>Your agent should live where your trust lives, not where your screen lives.</p>
-  </header>
-
-  <main class="layout">
-    <section class="card">
-      <h2>TrustField Demo</h2>
-      <select id="scenario">
-        <option value="health">Public Event Health Help</option>
-        <option value="travel">Travel Rebooking</option>
-        <option value="finance">Financial Check</option>
-      </select>
-      <textarea id="prompt"></textarea>
-      <button id="run">Run</button>
-      <pre id="output"></pre>
-    </section>
-    <section class="card">
-      <h2>Trust Rings</h2>
-      <ul>
-        <li>HaloVault</li><li>HaloID</li><li>HaloConsent</li><li>HaloPolicy</li><li>HaloDelegation</li><li>HaloRegistry</li><li>HaloResolver</li><li>HaloConnect</li><li>HaloAudit</li>
-      </ul>
-    </section>
-  </main>
-
-  <footer>Concept by Mahesh Lambe • Your agent should live where your trust lives, not where your screen lives.</footer>
-  <script src="/app.js"></script>
-</body>
-</html>
-<!doctype html><html><head><meta charset='utf-8'><title>AgentHalo</title></head><body><h1>AgentHalo</h1><h2>The Personal Trust Field for AI Agents.</h2><p>Your agent should live where your trust lives, not where your screen lives.</p><p>Concept by Mahesh Lambe.</p><footer>Concept by Mahesh Lambe • Your agent should live where your trust lives, not where your screen lives.</footer></body></html>
+<!doctype html><html><head><meta charset='utf-8'/><title>AgentHalo</title><link rel='stylesheet' href='/styles.css'></head><body>
+<h1>AgentHalo TrustInspector Demo</h1>
+<select id='scenario'><option value='health'>Health</option><option value='finance'>Finance</option></select>
+<textarea id='prompt'></textarea><button id='run'>Run</button>
+<h2>Trust Inspector</h2><button id='verifyProofs'>Verify Proofs</button><button id='verifyAudit'>Verify Audit Chain</button><button id='revoke'>Revoke Delegation</button>
+<pre id='output'></pre><script src='/app.js'></script></body></html>
