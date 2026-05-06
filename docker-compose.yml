@@ -1,0 +1,44 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: agenthalo
+      POSTGRES_PASSWORD: agenthalo
+      POSTGRES_DB: agenthalo
+    ports: ["5432:5432"]
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://agenthalo:agenthalo@db:5432/agenthalo
+      MOCK_HEALTH_ENDPOINT: http://mock-health:8010/nearest-medical-camp
+    ports: ["8000:8000"]
+    depends_on: [db, mock-health, mock-transport, mock-banking, mock-government]
+  web:
+    image: nginx:alpine
+    volumes: ["./apps/web:/usr/share/nginx/html:ro"]
+    ports: ["3000:80"]
+    depends_on: [api]
+  mock-health:
+    build: { context: ., dockerfile: examples/kumbh/Dockerfile }
+    ports: ["8010:8010"]
+  mock-transport:
+    image: python:3.12-slim
+    working_dir: /app
+    volumes: ["./examples/transport:/app:ro"]
+    command: sh -c "pip install fastapi uvicorn && uvicorn mock-transport-service:app --host 0.0.0.0 --port 8020"
+    ports: ["8020:8020"]
+  mock-banking:
+    image: python:3.12-slim
+    working_dir: /app
+    volumes: ["./examples/banking:/app:ro"]
+    command: sh -c "pip install fastapi uvicorn && uvicorn mock-banking-service:app --host 0.0.0.0 --port 8030"
+    ports: ["8030:8030"]
+  mock-government:
+    image: python:3.12-slim
+    working_dir: /app
+    volumes: ["./examples/government:/app:ro"]
+    command: sh -c "pip install fastapi uvicorn && uvicorn mock-government-service:app --host 0.0.0.0 --port 8040"
+    ports: ["8040:8040"]
