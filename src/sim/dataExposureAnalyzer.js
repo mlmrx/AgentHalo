@@ -1,0 +1,5 @@
+export function analyzeDataExposure(riskPlan) {
+  const action = riskPlan.proposed_actions?.[0] || {};
+  const data_items = [...(action.data_requested || []).map((field) => ({ field, sensitivity: /medical|financial|identity/.test(field) ? 'sensitive' : field.includes('location') ? 'medium' : 'low', reason: `Needed for ${action.capability || riskPlan.intent}.`, required: true, retention: 'task_scoped', recipient: action.target_service_id || 'local_only' })), ...(action.data_optional || []).map((field) => ({ field, sensitivity: /medical|financial|identity/.test(field) ? 'sensitive' : 'low', reason: 'Optional context that may improve result quality.', required: false, retention: 'task_scoped', recipient: action.target_service_id || 'local_only' }))];
+  return { report_id: `exposure_${riskPlan.plan_id}`, task_id: riskPlan.task_id, plan_id: riskPlan.plan_id, data_items, blocked_items: [{ field: 'full_vault', reason: 'Not necessary for this task.' }, { field: 'identity_documents', reason: 'Excluded unless strictly required.' }, { field: 'exact_location', reason: 'Approximate location is preferred when sufficient.' }] };
+}

@@ -84,3 +84,9 @@ Includes unit and flow tests for policy, consent, delegation, registry, resolver
 
 ## Concept by Mahesh Lambe
 Your agent should live where your trust lives, not where your screen lives.
+
+
+## HaloSim: Preview Before Permission
+Traditional apps ask for permissions once and then quietly operate. AgentHalo does the opposite: it simulates the action first, shows the user what would happen, compares safer paths, and only then asks for consent.
+
+AgentHalo does not ask users to blindly approve agent actions. AgentHalo lets users preview, compare, constrain, approve, and audit agent authority.

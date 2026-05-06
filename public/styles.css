@@ -7,3 +7,5 @@ textarea{width:100%;height:80px;background:#0d1629;color:#fff;border:1px solid #
 button{background:var(--acc);color:#081225;border:none;padding:10px 16px;border-radius:8px;font-weight:700}
 pre{white-space:pre-wrap;background:#0d1629;padding:12px;border-radius:8px;min-height:120px}
 footer{text-align:center;padding:20px;color:#a9b9dc}
+
+.trust-preview{background:#0d1629;border:1px solid #2a3f69;border-radius:8px;padding:10px;margin:8px 0;}
