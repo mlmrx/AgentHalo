@@ -84,3 +84,15 @@ Includes unit and flow tests for policy, consent, delegation, registry, resolver
 
 ## Concept by Mahesh Lambe
 Your agent should live where your trust lives, not where your screen lives.
+
+
+## HaloProof
+HaloProof is AgentHalo’s signed proof system for consent, delegation, revocation, and auditability. It allows a user, developer, or service to inspect why an agent was allowed to act, what it was allowed to share, which service it called, and whether that authority is still valid.
+
+"AgentHalo does not ask users to blindly trust agent actions. It gives every meaningful action a receipt."
+
+This MVP uses pluggable signing interfaces and currently defaults to HMAC-SHA256 for demonstration, with Ed25519 planned.
+
+AgentHalo is not the agent’s hands.
+AgentHalo is not the agent’s brain.
+AgentHalo is the agent’s authority layer.

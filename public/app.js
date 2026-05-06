@@ -1,16 +1,6 @@
-const promptEl = document.getElementById('prompt');
-const scenarioEl = document.getElementById('scenario');
-const outputEl = document.getElementById('output');
-const defaults = {
-  health: 'Help my mother find nearby verified medical help. She prefers Hindi and less crowded routes.',
-  travel: 'My flight is delayed. Find safer rebooking options but do not purchase anything.',
-  finance: 'Can I afford this $1,200 purchase this month?'
-};
-promptEl.value = defaults.health;
-scenarioEl.addEventListener('change', () => (promptEl.value = defaults[scenarioEl.value]));
-document.getElementById('run').addEventListener('click', async () => {
-  const body = { userId: 'user-001', prompt: promptEl.value, consentDecisions: scenarioEl.value === 'finance' ? undefined : { approximate_location: true, medical_constraint: false } };
-  const res = await fetch('/api/v1/agent/request', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
-  const json = await res.json();
-  outputEl.textContent = JSON.stringify(json, null, 2);
-});
+const outputEl=document.getElementById('output'); const promptEl=document.getElementById('prompt'); const scenarioEl=document.getElementById('scenario'); let latest;
+promptEl.value='Help my mother find nearby verified medical help. She prefers Hindi and less crowded routes.';
+document.getElementById('run').onclick=async()=>{const body={userId:'user-001',prompt:promptEl.value,consentDecisions:{approximate_location:true,medical_history:false}}; const r=await fetch('/api/v1/agent/request',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}); latest=await r.json(); outputEl.textContent=JSON.stringify(latest,null,2);};
+document.getElementById('revoke').onclick=async()=>{if(!latest?.delegationGrant)return; const r=await fetch(`/api/v1/delegations/${latest.delegationGrant.grant_id}/revoke`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({userId:'user-001'})}); outputEl.textContent=JSON.stringify(await r.json(),null,2);};
+document.getElementById('verifyProofs').onclick=async()=>{if(!latest?.consentReceipt)return; const r=await fetch('/api/v1/proofs/verify',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({payload:{...latest.consentReceipt,proof:undefined},proof:latest.consentReceipt.proof})}); outputEl.textContent=JSON.stringify(await r.json(),null,2);};
+document.getElementById('verifyAudit').onclick=async()=>{const r=await fetch('/api/v1/audit/user-001/verify-chain',{method:'POST'}); outputEl.textContent=JSON.stringify(await r.json(),null,2);};
