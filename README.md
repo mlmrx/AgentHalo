@@ -1,163 +1,86 @@
 # AgentHalo
+## The Personal Trust Field for AI Agents
+Your agent should live where your trust lives, not where your screen lives.
 
-**Tagline:** The trusted personal presence of your AI agent.
+Concept by Mahesh Lambe.
 
-AgentHalo is a developer platform MVP for a **personal agent substrate**: a user-controlled trust layer where private memory, identity, consent, permissions, delegation, and audit history persist independently from any app surface.
+## What is AgentHalo?
+AgentHalo is a developer-grade reference implementation of a Personal Trust Field for AI agents.
 
-> **Core thesis:** Your agent should live where your trust lives, not where your screen lives.
+## Why agents need a personal trust field
+Agent actions need user-owned authority, policy, consent, minimization, delegation, and auditability across systems.
 
----
+## What AgentHalo is not
+Not an app-first chatbot UX. Not a generic runtime. Not a super app.
 
-## What AgentHalo Demonstrates
+## Core thesis
+Your agent should live where your trust lives, not where your screen lives.
 
-- A private **User Vault** for preferences and bounded memory.
-- A persistent **Agent Identity** for the personal agent.
-- A deterministic **Policy Engine** for safety rules and consent requirements.
-- A formal **Consent Flow** with expiring requests.
-- Short-lived **Delegation Tokens** (purpose, scope, audience, expiry, constraints).
-- **AgentFacts Discovery + Verification** for trusted service-agent selection.
-- A constrained **External Agent Call** with minimum necessary data.
-- End-to-end **Audit Trail** for explainability and accountability.
+## Architecture
+HaloSurface -> AgentHalo Gateway -> HaloRuntime -> HaloVault, HaloID, HaloPolicy, HaloConsent, HaloDelegation, HaloRegistry, HaloResolver, HaloConnect, HaloAudit.
 
----
+## Modules
+- HaloVault
+- HaloID
+- HaloConsent
+- HaloPolicy
+- HaloDelegation
+- HaloRegistry
+- HaloResolver
+- HaloConnect
+- HaloAudit
 
-## What AgentHalo Is Not
+## Demo flows
+1. Public Event Health Help
+2. Travel Rebooking
+3. Financial Check
 
-- Not another chatbot shell.
-- Not a mobile app.
-- Not a super app.
-- Not a centralized data broker.
+## API overview
+Implements `/health` and `/api/v1/*` trust-field endpoints for vault, policy, consent, delegation, registry, resolution, connect, audit, and agent request.
 
----
+## Security model
+- Full vault never leaves AgentHalo.
+- Unverified services blocked.
+- Revoked/expired grants fail verification.
 
-## Platform Architecture
+## Data minimization model
+Only scoped fields approved by consent are shared.
 
-```text
-Access Surfaces (Web / Voice / Phone / Kiosk)
-                    |
-                    v
-         +-----------------------------+
-         |       AgentHalo API         |
-         |   Orchestration Runtime     |
-         +--------------+--------------+
-                        |
-      +-----------------+------------------+
-      |                 |                  |
-      v                 v                  v
- User Vault      Consent + Policy   Delegation Service
-      |                                     |
-      +-----------------+------------------+
-                        |
-                        v
-           Discovery + AgentFacts Verify
-                        |
-                        v
-             Verified External Agents
-                        |
-                        v
-                    Audit Trail
-```
+## Consent and delegation model
+Consent receipts plus short-lived DelegationGrants with purpose, audience, scope, constraints, and expiry.
 
----
+## ServiceCard model
+Service discovery and verification is based on local ServiceCards.
 
-## End-to-End Demo Flow (Kumbh Medical Camp)
+## Audit model
+Append-only HaloAudit trail for intents, policy, consent, delegation, calls, and outcomes.
 
-**User input**
+## Local development
+- `npm install`
+- `npm test`
+- `npm start`
 
-`Help my mother find the nearest verified medical camp. She prefers Hindi and less crowded routes.`
-
-**System behavior**
-
-1. `/v1/input` receives request.
-2. Runtime classifies intent as `find_nearest_medical_help`.
-3. Vault provides minimal context (language + mobility preference).
-4. Policy requires consent before location sharing.
-5. Consent request is created (10-minute expiry).
-6. User approves.
-7. Delegation token is minted (short-lived, scoped).
-8. AgentFacts for `agent:nanda:kumbh.health-service` are verified.
-9. External call is made with minimum necessary data only.
-10. User receives privacy-explicit answer.
-11. Audit events capture the operation trail.
-
----
-
-## Repository Layout
-
-```text
-apps/
-  api/                      FastAPI backend + orchestration runtime
-  web/                      Demo landing surface
-examples/
-  kumbh/                    Mock external health agent
-```
-
----
-
-
-## Additional Vertical Working Examples
-
-Alongside health-service flow, the platform now includes runnable mock verticals:
-- **Transport:** nearest shuttle and safer route guidance (`examples/transport/mock-transport-service.py`).
-- **Banking:** payment intent endpoint that enforces human confirmation (`examples/banking/mock-banking-service.py`).
-- **Government services:** document status lookup (`examples/government/mock-government-service.py`).
-
-Use `POST /v1/discover` with `{"domain":"transport"|"banking"|"government"|"health"}` and `GET /v1/examples/use-cases` to browse built-in scenarios.
-
----
-
-## Local Development
-
-### Prerequisites
-- Docker + Docker Compose
-
-### Run
-
-```bash
-docker compose up --build
-```
-
-### Endpoints
-- Web: `http://localhost:3000`
-- API docs: `http://localhost:8000/docs`
-- Mock health service docs: `http://localhost:8010/docs`
-
----
-
-## API Overview
-
-- `POST /v1/input`
-- `GET /v1/vault/{user_id}`
-- `PUT /v1/vault/{user_id}`
-- `POST /v1/policy/evaluate`
-- `POST /v1/consent/request`
-- `POST /v1/consent/respond`
-- `POST /v1/delegations`
-- `POST /v1/discover`
-- `POST /v1/resolve`
-- `POST /v1/agent/call`
-- `GET /v1/audit/{user_id}`
-- `GET /v1/agentfacts/{agent_id}`
-- `POST /v1/agentfacts/verify`
-
----
-
-## Security Posture (MVP)
-
-- No broad permanent tokens.
-- Delegation tokens are always short-lived.
-- External calls require purpose/scope/audience/expiry.
-- Full vault never leaves AgentHalo boundary.
-- AgentFacts trust gate before service invocation.
-- Auditable records for sensitive actions.
-
----
+## Tests
+Includes unit and flow tests for policy, consent, delegation, registry, resolver, audit, and end-to-end trust behavior.
 
 ## Roadmap
+- Real passkeys / WebAuthn
+- OIDC integration
+- Verifiable credentials
+- Local-first encrypted vault
+- Signed ServiceCards
+- Policy engine migration to OPA/Rego or Cedar
+- MCP adapter
+- A2A adapter
+- OpenAPI adapter
+- Browser automation adapter
+- Edge deployment mode
+- Personal cloud sync
+- Multi-user support
+- Portable AgentHalo account
+- Revocation registry
+- Trust scoring
+- Governance templates for high-trust domains
 
-- Passkeys and OIDC integration.
-- Verifiable credentials for user and service-agent assertions.
-- MCP and A2A adapters.
-- NANDA index integration.
-- Offline + edge deployment modes.
-- Policy engine migration path to OPA/Rego/Cedar.
+## Concept by Mahesh Lambe
+Your agent should live where your trust lives, not where your screen lives.

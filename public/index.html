@@ -1,51 +1,39 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AgentHalo MVP</title>
-  <style>
-    body { font-family: Inter, system-ui, sans-serif; max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
-    .card { border: 1px solid #ddd; border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }
-    button { background: #4f46e5; color: white; border: none; border-radius: 8px; padding: .6rem 1rem; }
-    textarea { width: 100%; min-height: 90px; }
-    pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; border-radius: 8px; }
-  </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AgentHalo — Personal Trust Field</title>
+  <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-  <h1>AgentHalo</h1>
-  <p><strong>The trusted personal presence of your AI agent.</strong></p>
-  <div class="card">
-    <h3>Ask your personal agent</h3>
-    <textarea id="prompt">I feel overheated. Where is the verified medical camp?</textarea>
-    <div style="margin-top: 8px;">
-      <button id="run">Run request</button>
-      <button id="consent">Run with consent</button>
-    </div>
-  </div>
-  <div class="card">
-    <h3>Response</h3>
-    <pre id="output">No request yet.</pre>
-  </div>
-  <div class="card">
-    <h3>Recent audit events</h3>
-    <pre id="audit">No audit events yet.</pre>
-  </div>
-<script>
-  async function invoke(consentGranted=false) {
-    const prompt = document.getElementById('prompt').value;
-    const result = await fetch('/api/agent/request', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({prompt, consentGranted})
-    }).then(r => r.json());
+  <header class="hero">
+    <h1>AgentHalo</h1>
+    <p class="sub">The Personal Trust Field for AI Agents.</p>
+    <p>Your agent should live where your trust lives, not where your screen lives.</p>
+  </header>
 
-    document.getElementById('output').textContent = JSON.stringify(result, null, 2);
-    const audit = await fetch('/api/audit').then(r=>r.json());
-    document.getElementById('audit').textContent = JSON.stringify(audit.events, null, 2);
-  }
-  document.getElementById('run').onclick = () => invoke(false);
-  document.getElementById('consent').onclick = () => invoke(true);
-</script>
+  <main class="layout">
+    <section class="card">
+      <h2>TrustField Demo</h2>
+      <select id="scenario">
+        <option value="health">Public Event Health Help</option>
+        <option value="travel">Travel Rebooking</option>
+        <option value="finance">Financial Check</option>
+      </select>
+      <textarea id="prompt"></textarea>
+      <button id="run">Run</button>
+      <pre id="output"></pre>
+    </section>
+    <section class="card">
+      <h2>Trust Rings</h2>
+      <ul>
+        <li>HaloVault</li><li>HaloID</li><li>HaloConsent</li><li>HaloPolicy</li><li>HaloDelegation</li><li>HaloRegistry</li><li>HaloResolver</li><li>HaloConnect</li><li>HaloAudit</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>Concept by Mahesh Lambe • Your agent should live where your trust lives, not where your screen lives.</footer>
+  <script src="/app.js"></script>
 </body>
 </html>

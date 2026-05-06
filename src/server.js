@@ -1,35 +1,35 @@
-import express from "express";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import { runMedicalCampFlow } from "./orchestrator.js";
-import { readAuditTail } from "./audit.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const app = express();
-app.use(express.json());
-app.use(express.static(path.join(__dirname, "..", "public")));
-
-app.post("/api/agent/request", (req, res) => {
-  try {
-    const { userId = "user-001", prompt, eventId = "solstice-festival-2026", consentGranted = false } = req.body;
-    const output = runMedicalCampFlow({ userId, prompt, eventId, consentGranted });
-    res.json(output);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
-
-app.get("/api/audit", (_req, res) => {
-  res.json({ events: readAuditTail(50) });
-});
-
-app.get("/health", (_req, res) => {
-  res.json({ ok: true, product: "AgentHalo", tagline: "The trusted personal presence of your AI agent." });
-});
-
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`AgentHalo running on http://localhost:${port}`);
-});
+import express from 'express';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { HaloVault } from './vault/haloVault.js';
+import { planIntent } from './runtime/intentPlanner.js';
+import { HaloPolicy } from './policy/haloPolicy.js';
+import { HaloConsent } from './consent/haloConsent.js';
+import { HaloDelegation } from './delegation/haloDelegation.js';
+import { HaloRegistry } from './registry/haloRegistry.js';
+import { HaloResolver } from './resolver/haloResolver.js';
+import { HaloConnect } from './connect/haloConnect.js';
+import { HaloAudit } from './audit/haloAudit.js';
+import { processAgentRequest } from './runtime/haloRuntime.js';
+const app=express(); app.use(express.json());
+const __filename=fileURLToPath(import.meta.url); const __dirname=path.dirname(__filename); app.use(express.static(path.join(__dirname,'..','public')));
+app.get('/health',(_q,res)=>res.json({ok:true,product:'AgentHalo'}));
+app.get('/api/v1/vault/:userId',(q,r)=>r.json(HaloVault.getUserVault(q.params.userId)||{}));
+app.put('/api/v1/vault/:userId',(q,r)=>r.json(HaloVault.updateUserVault(q.params.userId,q.body)));
+app.post('/api/v1/intent/plan',(q,r)=>r.json({intent:planIntent(q.body.prompt)}));
+app.post('/api/v1/policy/evaluate',(q,r)=>r.json(HaloPolicy.evaluate(q.body)));
+app.post('/api/v1/consent/request',(q,r)=>r.json(HaloConsent.request(q.body)));
+app.post('/api/v1/consent/respond',(q,r)=>r.json(HaloConsent.respond(q.body)));
+app.get('/api/v1/consent/:consentId',(q,r)=>r.json(HaloConsent.get(q.params.consentId)||{}));
+app.post('/api/v1/delegation/grant',(q,r)=>r.json(HaloDelegation.grant(q.body)));
+app.post('/api/v1/delegation/verify',(q,r)=>r.json({valid:HaloDelegation.verify(q.body)}));
+app.post('/api/v1/delegation/revoke',(q,r)=>r.json(HaloDelegation.revoke(q.body)||{}));
+app.get('/api/v1/registry/services',(_q,r)=>r.json(HaloRegistry.list()));
+app.get('/api/v1/registry/services/:serviceId',(q,r)=>r.json(HaloRegistry.get(q.params.serviceId)||{}));
+app.post('/api/v1/registry/services/verify',(q,r)=>r.json({verified:HaloRegistry.verify(HaloRegistry.get(q.body.serviceId))}));
+app.post('/api/v1/resolve',(q,r)=>r.json(HaloResolver.resolve(q.body)||{}));
+app.post('/api/v1/connect/call',(q,r)=>r.json(HaloConnect.call(q.body)));
+app.get('/api/v1/audit/:userId',(q,r)=>r.json(HaloAudit.byUser(q.params.userId)));
+app.get('/api/v1/audit/:userId/:taskId',(q,r)=>r.json(HaloAudit.byTask(q.params.userId,q.params.taskId)));
+app.post('/api/v1/agent/request',(q,r)=>{ try{r.json(processAgentRequest(q.body));}catch(e){r.status(400).json({error:e.message});}});
+app.listen(process.env.PORT||3000,()=>console.log('AgentHalo running'));
