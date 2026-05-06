@@ -39,6 +39,7 @@ def create_delegation(body: dict):
     return {"token": token, "payload": payload}
 
 @app.post('/v1/discover')
+def discover(body: dict): return {"agents": platform.discover(body.get("domain"))}
 def discover(_body: dict): return {"agents": [platform.agentfacts]}
 
 @app.post('/v1/resolve')
@@ -87,3 +88,13 @@ async def input_flow(req: InputReq):
     platform.add_audit(req.user_id, purpose, "external_agent_called", "nearest_camp_returned", ["approx_location"], platform.agentfacts.agent_id, req.consent_id, payload.jti)
     answer = "Medical Camp B is about 600 meters away. Take the Gate 4 route. Avoid Sector 7 because crowd density is high. I used only approximate location and did not share medical history."
     return {"status":"completed", "intent": purpose, "shared": {"approx_location": True, "medical_history": False, "full_vault": False}, "delegation": payload, "service_result": service, "answer": answer}
+
+
+@app.get('/v1/examples/use-cases')
+def use_cases():
+    return {"verticals": [
+        {"domain": "health", "request": "Find nearest verified medical camp", "agent_id": platform.agentfacts_catalog['health'].agent_id},
+        {"domain": "transport", "request": "Find nearest shuttle with low crowd route", "agent_id": platform.agentfacts_catalog['transport'].agent_id},
+        {"domain": "government", "request": "Check document verification status", "agent_id": platform.agentfacts_catalog['government'].agent_id},
+        {"domain": "banking", "request": "Attempt low value payment (human confirmation required)", "agent_id": platform.agentfacts_catalog['banking'].agent_id}
+    ]}

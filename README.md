@@ -94,6 +94,18 @@ examples/
 
 ---
 
+
+## Additional Vertical Working Examples
+
+Alongside health-service flow, the platform now includes runnable mock verticals:
+- **Transport:** nearest shuttle and safer route guidance (`examples/transport/mock-transport-service.py`).
+- **Banking:** payment intent endpoint that enforces human confirmation (`examples/banking/mock-banking-service.py`).
+- **Government services:** document status lookup (`examples/government/mock-government-service.py`).
+
+Use `POST /v1/discover` with `{"domain":"transport"|"banking"|"government"|"health"}` and `GET /v1/examples/use-cases` to browse built-in scenarios.
+
+---
+
 ## Local Development
 
 ### Prerequisites

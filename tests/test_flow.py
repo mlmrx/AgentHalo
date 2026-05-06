@@ -54,3 +54,14 @@ def test_audit_event_created():
     with patch('httpx.AsyncClient.post', new=mock_post):
         client.post('/v1/input', json={"text":"medical help needed", "consent_approved":True})
     assert len(platform.audit) > 0
+
+
+def test_discover_multiple_verticals():
+    res = client.post('/v1/discover', json={})
+    assert len(res.json()["agents"]) >= 4
+    t = client.post('/v1/discover', json={"domain":"transport"})
+    assert t.json()["agents"][0]["agent_type"] == "public_service.transport"
+
+def test_vertical_use_case_catalog():
+    res = client.get('/v1/examples/use-cases')
+    assert len(res.json()["verticals"]) >= 4

@@ -21,6 +21,17 @@ class Platform:
         self.identities = {
             "user_123": AgentIdentity(agent_id="agenthalo:user_123:personal", owner_user_id="user_123", display_name="Mahesh's AgentHalo", public_key="demo-public-key", status="active", created_at=datetime.now(timezone.utc))
         }
+        data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
+        def load(name):
+            with open(os.path.join(data_dir, name), "r", encoding="utf-8") as f:
+                return AgentFacts(**json.load(f))
+        self.agentfacts_catalog = {
+            "health": load("agentfacts.health-service.json"),
+            "transport": load("agentfacts.transport-service.json"),
+            "banking": load("agentfacts.banking-service.json"),
+            "government": load("agentfacts.government-service.json")
+        }
+        self.agentfacts = self.agentfacts_catalog["health"]
         with open(os.path.join(os.path.dirname(__file__), "..", "data", "agentfacts.health-service.json"), "r", encoding="utf-8") as f:
             self.agentfacts = AgentFacts(**json.load(f))
         endpoint = os.getenv("MOCK_HEALTH_ENDPOINT")
@@ -29,6 +40,15 @@ class Platform:
         self.consents = {}
         self.audit = []
 
+    def discover(self, domain: str | None = None):
+        if domain and domain in self.agentfacts_catalog:
+            return [self.agentfacts_catalog[domain]]
+        return list(self.agentfacts_catalog.values())
+
+    def evaluate_policy(self, purpose: str, requested_data: list[str], risk: str = "medium"):
+        if "background_location" in requested_data:
+            return {"allowed": False, "reason": "Background location not allowed in MVP"}
+        if purpose in ["ambulance_request", "identity_document_share"] or risk == "high":
     def evaluate_policy(self, purpose: str, requested_data: list[str], risk: str = "medium"):
         if "background_location" in requested_data:
             return {"allowed": False, "reason": "Background location not allowed in MVP"}

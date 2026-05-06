@@ -1,0 +1,11 @@
+{
+  "agent_id": "agent:gov:document-assist",
+  "name": "Citizen Document Assist Agent",
+  "operator": {"name": "Digital Citizen Services", "did": "did:web:citizen.example.gov"},
+  "agent_type": "government.document",
+  "capabilities": [{"id": "document_status", "description": "Get document status", "risk_level": "medium"}],
+  "protocols": {"rest": {"endpoint": "http://mock-government:8040/document-status"}},
+  "trust": {"assurance_level": "government_verified", "status": "active"},
+  "privacy": {"data_retention": "task_scoped", "stores_user_data": false},
+  "signature": {"type": "local-demo-signature", "value": "signature-placeholder"}
+}
